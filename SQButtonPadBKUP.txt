@@ -1,0 +1,67 @@
+/*
+Composes a pseudomonome (PMonome)
+
+Try to make this compatible with real monome software...?
+*/
+class InsetButtonPad implements Tangible
+{
+  InsetButton[][] buttons;
+  int numButt, wwidth, hheight, bWidth, bHeight, x, y;
+  
+  //isz is the number of buttons
+  InsetButtonPad(int x, int y, int iWidth, int iHeight, int isz)
+  {
+    buttons = new InsetButton[isz+1][isz+1];
+    this.numButt = isz;
+    
+    this.x = x;
+    this.y = y;
+    this.wwidth = iWidth;
+    this.hheight = iHeight;
+    
+    this.bWidth = (this.wwidth/this.numButt);
+    this.bHeight = (this.hheight/this.numButt);
+    
+    //Fills the array with buttons
+    for(int i = 0; i <= isz; i++)
+    {
+      for(int j = 0; j <= isz; j++)
+      {
+        buttons[i][j] = new InsetButton(x + i*this.bWidth, y + j*this.bHeight,
+         this.bWidth, this.bHeight);
+      }
+    }
+  }
+  boolean click(int iX, int iY, char tclick)
+  {
+    //for through all buttons, calling click on each
+    boolean res = false;
+    for(int i = 0; i < this.numButt; i++)
+    {
+      for(int j = 0; j < this.numButt; j++)
+      {
+        if(buttons[i][j].click(iX, iY, tclick))
+          res = true;
+      }
+    }
+    return res;
+  }
+  void paint()
+  {
+    paint(x, y, wwidth, hheight);
+  }
+  void paint(int iX, int iY, int iW, int iH)
+  {
+    for(int i = 0; i < buttons.length-1; i++)
+    {
+      for(int j = 0; j < buttons.length-1; j++)
+      {
+        buttons[i][j].paint();
+      }
+    }
+  }
+  int getX(){ return x;}
+  int getY(){ return y;}
+  int getW(){ return wwidth;}
+  int getH(){ return hheight;}
+}

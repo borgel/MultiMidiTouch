@@ -1,0 +1,90 @@
+/*
+Composes a pseudomonome (PMonome)
+
+Try to make this compatible with real monome software...?
+*/
+class PMonome implements Tangible
+{
+  InsetButton[][] buttons;
+  int numButt, sLen, buttLen;
+  
+  PMonome(int x, int y, int sideLen, int isz)
+  {
+    buttons = new InsetButton[isz+1][isz+1];
+    this.numButt = isz;
+    this.sLen = sideLen;
+    
+    this.buttLen = (int)(this.sLen/this.numButt);
+    
+    //Fills the array with buttons
+    for(int i = 0; i <= isz; i++)
+    {
+      for(int j = 0; j <= isz; j++)
+      {
+        buttons[i][j] = new InsetButton(i*this.buttLen, j*this.buttLen,
+         this.buttLen, this.buttLen);
+      }
+    }
+  }
+  void click(int[][] clicks)
+  {
+    //for through all buttons, calling click on each
+    for(int i = 0; i < this.numButt; i++)
+    {
+      for(int j = 0; j < this.numButt; j++)
+      {
+        if(buttons[i][j].click(clicks))
+          fireOSC('b', i, j);
+      }
+    }
+  }
+  void unClick(int[][] clicks)
+  {
+    for(int i = 0; i < this.numButt; i++)
+    {
+      for(int j = 0; j < this.numButt; j++)
+      {
+        buttons[i][j].unClick(clicks);
+      }
+    }
+  }
+  void updateClick(int[][] clicks)
+  {
+    for(int i = 0; i < this.numButt; i++)
+    {
+      for(int j = 0; j < this.numButt; j++)
+      {
+        if(buttons[i][j].updateClick(clicks))
+          fireOSC('b', i, j);
+      }
+    }
+  }
+  
+  void fireOSC(char type, int x, int y)
+  {
+    
+  }
+  //Takes in OSC messages and carries out their command
+  void OSCHandler()
+  {
+    //Decode the message
+    int x = 0;
+    int y = 0;
+    String msg = "led-";
+    
+    //Trigger command
+    if(msg == "led")
+      buttons[x][y].on();
+  }
+  
+  void paint()
+  {
+    for(int i = 0; i < buttons.length-1; i++)
+    {
+      for(int j = 0; j < buttons.length-1; j++)
+      {
+        buttons[i][j].paint();
+      }
+    }
+  }
+}

@@ -1,0 +1,37 @@
+//This assumes everything that gets here is destined for me
+void oscEvent(OscMessage OSCmsg)
+{
+  // check if theOscMessage has the address pattern we are looking for.
+  //println("### OSC["+OSCmsg.addrPattern());
+  print("###>");
+  
+  String type = OSCmsg.get(0).toString();
+  
+  print("Is Tuio: ");
+  // check if the typetag is the right one
+  //Figure out what kind of message it was
+  if(type.equals("alive"))
+  {
+    print("is 'alive': ");
+    // parse theOscMessage and extract the values from the osc message arguments.
+    //int firstValue = OSCmsg.get(0).intValue();  
+    //float secondValue = OSCmsg.get(1).floatValue();
+    //String thirdValue = OSCmsg.get(2).stringValue();
+    //print("### received an osc message /tuio with typetag ifs.");
+  }  
+  else if(type.equals("set"))
+  {
+    print("is 'set': ");
+  }
+  else if(type.equals("fseq"))
+  {
+    print("is 'fseq': ");
+  }
+  
+  println();
+  /*
+  //Add to relevant
+  if alive, then take list of session IDs that comes in and
+  store to 'seshIDs' if not already present
+  */
+}

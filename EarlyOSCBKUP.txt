@@ -1,0 +1,115 @@
+/*
+So heres the idea. This takes in cool input, and spits out MIDI that, say, Lewis can take
+in and use to mix kewl beatz. It can speak SpaceNavigator, as well as multi touch ideally.
+Perhaps, I can test that by making a multi touch piano or something.
+-Can it speak TUIO?
+  -Yes, I think so? It can certainly speak OSC if that works...
+  
+-Multitouch idea:
+  Have an arraylist of all objects which are on screen at once, iterate across it whenever a
+    finger is added. Ask each one if it is being touched, if so, tell it to act. Otherwise,
+    move on
+-http://www.tuio.org/?specification
+*/
+import oscP5.*;
+import netP5.*;
+
+OscP5 osc;
+NetAddress oscRemote;
+int OSC_SPEAK_PORT = 12000;  //8000
+int OSC_LISTEN_PORT = 3333;  //3333 is from tBeta
+
+//Maintains the list of what IDs are availible
+ArrayList seshIDs;
+
+InsetPiano piano;
+InsetButtonPad buttonPad;
+
+void setup()
+{
+  frameRate(25);
+  size(600, 600);
+  colorMode(HSB);  //useful?
+  
+  //Setup OSC Things
+  osc = new OscP5(this, OSC_LISTEN_PORT);  //listens
+  oscRemote = new NetAddress("127.0.0.1", OSC_SPEAK_PORT);  //speaks out, "127.0.0.1"
+  
+  //Now create all the object panels
+  piano = new InsetPiano(500, 80, 1);
+  buttonPad = new InsetButtonPad(10, 10, 300, 150, 8);
+  
+  //Some random settings
+  piano.wwidth = 400;
+  piano.hheight = piano.wwidth/2;
+}
+
+void draw()
+{
+  background(0);
+  updatePos();
+  
+  piano.paint(200, 200);
+  buttonPad.paint();
+}
+
+//This assumes everything that gets here is destined for me
+void oscEvent(OscMessage OSCmsg) {
+  // check if theOscMessage has the address pattern we are looking for.
+  //println("### OSC["+OSCmsg.addrPattern());
+  print("###>");
+  
+  String msgType = OSCmsg.get(0).toString();
+  
+  print("#Is Tuio: ");
+  // check if the typetag is the right one
+  //Figure out what kind of message it was
+  if(OSCmsg.checkAddrPattern("/tuio/2Dobj"))
+  {
+    print("is 2D Obj: ");
+    // parse theOscMessage and extract the values from the osc message arguments.
+    //int firstValue = OSCmsg.get(0).intValue();  
+    //float secondValue = OSCmsg.get(1).floatValue();
+    //String thirdValue = OSCmsg.get(2).stringValue();
+    //print("### received an osc message /tuio with typetag ifs.");
+    //println(" values: "+firstValue+", "+secondValue+", "+thirdValue);
+  }  
+  else if(OSCmsg.checkAddrPattern("/tuio/2Dblb"))
+  {
+    print("is 2D blob: ");
+  }
+  else if(OSCmsg.checkAddrPattern("2Dcur"))
+  {
+    print("is 2D cur: ");
+  }
+  
+  println();
+  /*
+  //Add to relevant
+  if alive, then take list of session IDs that comes in and
+  store to 'seshIDs' if not already present
+  */
+  }
+}
+
+void mouseClicked()
+{
+  //println(piano.PressKey(mouseX, mouseY));
+  //Use a foreach loop here
+  int[][] clicks = {{mouseX, mouseY}};
+  buttonPad.click(clicks);
+}
+void mouseReleased()
+{
+  int[][] clicks = {{mouseX, mouseY}};
+  buttonPad.unClick(clicks);
+}
+void mouseDragged()
+{
+  int[][] clicks = {{mouseX, mouseY}};
+  buttonPad.updateClick(clicks);
+}
+
+void updatePos()
+{
+}

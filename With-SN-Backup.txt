@@ -1,0 +1,87 @@
+/*
+So heres the idea. This takes in cool input, and spits out MIDI that, say, Lewis can take
+in and use to mix kewl beatz. It can speak SpaceNavigator, as well as multi touch ideally.
+Perhaps, I can test that by making a multi touch piano or something.
+-Can it speak TUIO?
+  -Yes, I think so? It can certainly speak OSC if that works...
+  
+-Multitouch idea:
+  Have an arraylist of all objects which are on screen at once, iterate across it whenever a
+    finger is added. Ask each one if it is being touched, if so, tell it to act. Otherwise,
+    move on
+-Make a monome
+*/
+
+import procontroll.*;  //For speaking to the HID devices directly
+
+ControllIO contr;  //access to all devices
+ControllDevice sn;  //the handle of the space navigator
+
+ControllSlider sXpos;
+ControllSlider sYpos;
+ControllSlider sZpos;
+ControllSlider sXrot;
+ControllSlider sYrot;
+ControllSlider sZrot;
+
+InsetPiano piano;
+InsetButtonPad buttonPad;
+
+//Globals! We all love globals!
+int tX = 0, tY = 0, tSize = 100;
+int tR = 0, tH = 0;
+
+float scalar = .1;
+
+
+void setup()
+{
+  size(800, 800);
+  colorMode(HSB);  //useful?
+  
+  piano = new InsetPiano(500, 80, 1);
+  buttonPad = new InsetButtonPad(10, 10, 300, 150, 8);
+  
+  configSN();
+}
+
+void draw()
+{
+  background(0);
+  updatePos();
+  
+  piano.wwidth = tSize;
+  piano.hheight = tSize/2;
+  piano.drawPiano(tX, tY);
+  buttonPad.paint();
+}
+
+void mouseClicked()
+{
+  println(piano.PressKey(mouseX, mouseY));
+}
+
+void configSN()
+{
+  contr = ControllIO.getInstance(this);
+  //Number 12 is the SpaceNavigator
+  sn = contr.getDevice("SpaceNavigator");  //Fails if not plugged in
+  
+  //Setup each slider object
+  //sn.printSliders();
+  sXpos = sn.getSlider(2);
+  sYpos = sn.getSlider(1);
+  sZpos = sn.getSlider(0);
+  sXrot = sn.getSlider(5);
+  sYrot = sn.getSlider(4);
+  sZrot = sn.getSlider(3);
+}
+void updatePos()
+{
+  tX += (int)sn.getSlider(2).getValue()*scalar;
+  tY += (int)sn.getSlider(1).getValue()*scalar;
+  
+  int nZ = (int)tSize - (int)(sn.getSlider(0).getValue()*scalar);
+  if(nZ > 100)
+    tSize -= sZpos.getValue()*scalar;
+}
