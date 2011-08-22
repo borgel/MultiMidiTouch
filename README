@@ -1,0 +1,7 @@
+This is effectively an emulator for the Jazzmutant Lemur (http://www.jazzmutant.com/lemur_overview.php), written in Processing
+and utilizing TUIO for data communication. It is designed to allow the user to use the Lemur JazzEditor (which creates layout
+files) to design an interface, and then display/interact with it using a custom multi touch table. So its like a Lemur, but
+one that dosen't cost thousands of dollars, or is bigger, or is installed somewhere, etc. 
+
+Last this was developed, it supported almost all the objects the JazzEditor did, but not all. The .jzml files the editor
+produces are just XML, so all that is left is designing the Java to draw the remaining object types.
